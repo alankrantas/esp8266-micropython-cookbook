@@ -25,7 +25,7 @@ while not wifi.isconnected():
 def ntpUpdate(timer):
     while True:
         try:
-            ntptime.settime() # query NTP server
+            ntptime.settime() # query NTP server and update system time
             break
         except:
             utime.sleep(5) # try again if failed
