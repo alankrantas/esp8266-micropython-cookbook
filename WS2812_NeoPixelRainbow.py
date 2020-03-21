@@ -1,3 +1,5 @@
+# WS2812 NeoPixel LED Rainbow/Rotation Effect (by Alan Wang)
+
 from machine import Pin
 from neopixel import NeoPixel
 import utime
