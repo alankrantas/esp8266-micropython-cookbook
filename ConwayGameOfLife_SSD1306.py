@@ -13,7 +13,16 @@ from machine import Pin, I2C, ADC, freq
 from ssd1306 import SSD1306_I2C
 
 freq(160000000)
-urandom.seed(ADC(0).read()) # randomize seed from floating analog readings
+gc.enable()
+
+
+# randomize seed from floating analog readings
+adc = ADC(0)
+seed = 0
+for _ in range(1000):
+    seed += adc.read()
+seed *= 10
+urandom.seed(seed * 10)
 
 B_list = list(map(int, B))
 S_list = list(map(int, S))
@@ -23,6 +32,11 @@ matrix_size_y = int(64 / matrix_factor)
 matrix = [bytearray(1 if urandom.getrandbits(random_bit_num) == 0 else 0
                     for _ in range(matrix_size_y))
           for _ in range(matrix_size_x)]
+
+print("Conway's Game of Life: matrix size {} x {} (seed: {})".format(
+    matrix_size_x, matrix_size_y, seed))
+
+generation = 0
 
 
 # calculate next generation
@@ -71,17 +85,11 @@ def display_matrix():
     oled.show()
 
 
-print("Conway's Game of Life: matrix size {} x {}".format(
-    matrix_size_x, matrix_size_y))
-
-generation = 0
-gc.enable()
-
 # start game of life
 while True:
     generation += 1
     cell_count = sum(map(sum, matrix))
-    print("Generation {}, {} cell(s)".format(generation, cell_count))
+    print("Generation {}: {} cell(s)".format(generation, cell_count))
     display_matrix()
     calculate_next_gen()
     gc.collect()
