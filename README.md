@@ -10,7 +10,13 @@ I publish ESP8266/ESP32 MicroPyton projects from time to time on [Hackster.io](h
 
 As far as I can tell, most ESP8266 boards basically functions the same. A NodeMCU V2 (not V3), WeMos D1 (Arduino Uno-style) or WeMos D1 mini is probably your best choise.
 
-## SSD1306 OLED Display
+## Timer-Based Simple Web Clock on SSD1306 OLED Display
+
+<i>File: [SimpleWebClockWithTimer.py](https://github.com/alankrantas/esp8266-micropython-cookbook/blob/master/SimpleWebClockWithTimer.py)</i>
+
+A mini web clock that update system RTC time every 15 minutes via NTP server. It uses two <b>machine.timer</b>s instead of a while loop, reducing the code down to less than 40 actual lines. Change the SSID and PW to your own WiFi AP.
+
+### SSD1306 OLED Display
 
 SSD1306 is a monochrome display, either in 128x64 (0.96") or 128x32 (0.91"), might be blue and/or yellow or white. MicroPython for ESP8266 has a built-in display module with 8x8 fonts from the framebuf module.
 
@@ -23,11 +29,13 @@ Here I use the I2C version with 4 pins:
 
 Beware that some Chinese-made SSD1306s do not return I2C ACK signals and will not work for MicroPython.
 
-## Timer-Based Simple Web Clock on SSD1306 OLED Display
+## Web JSON Query Template
 
-<i>File: [SimpleWebClockWithTimer.py](https://github.com/alankrantas/esp8266-micropython-cookbook/blob/master/SimpleWebClockWithTimer.py)</i>
+<i>File: [WebJSONQuery_Template.py](https://github.com/alankrantas/esp8266-micropython-cookbook/blob/master/WebJSONQuery_Template.py)</i>
 
-A mini web clock that update system RTC time every 15 minutes via NTP server. It uses two <b>machine.timer</b>s instead of a while loop, reducing the code down to less than 40 actual lines. Change the SSID and PW to your own WiFi AP.
+A template for querying a API and get its JSON response. The JSON response would be a dictionary object, in which you can extract data that you need.
+
+Note: if you see SSL error (like "TLS buffer overflow" and/or "ssl_handshake_status: -xxx"), either your WiFi is unstable or the API is not supported by MicroPython.
 
 ## WS2812 NeoPixel Rainbow/Rotation Effect
 
