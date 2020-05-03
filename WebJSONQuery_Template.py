@@ -4,11 +4,11 @@ import network, urequests, utime
 from machine import reset
 
 # user info
-wifi_ssid = 'your_wifi_ssid'
-wifi_pw = 'your_wifi_pw'
+wifi_ssid = 'your_wifi_ssid' # change this to your WiFi AP name
+wifi_pw   = 'your_wifi_pw'   # change this to your WiFi AP password
 
 # API url
-api_url = 'http://api.open-notify.org/iss-now.json'
+api_url   = 'http://api.open-notify.org/iss-now.json'
 
 # connecting to WiFi
 wifi = network.WLAN(network.STA_IF)
@@ -36,7 +36,7 @@ while True:
         
         if response.status_code == 200:
             print('Query successful. JSON response:')
-            # return a dict containing the JSON data
+            # return a dict object containing the JSON data
             parsed = response.json()
             print(parsed)
    
