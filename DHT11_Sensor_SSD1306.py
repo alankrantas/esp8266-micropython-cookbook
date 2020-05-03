@@ -1,3 +1,5 @@
+# Display DHT11 sensor readings on SSD1306
+
 from machine import Pin, I2C
 import utime, dht, ssd1306
 
