@@ -3,10 +3,14 @@
 import network, urequests, utime
 from machine import reset
 
+# user info
 wifi_ssid = 'your_wifi_ssid'
 wifi_pw = 'your_wifi_pw'
-api_url = 'https://official-joke-api.appspot.com/random_joke'
 
+# API url
+api_url = 'http://api.open-notify.org/iss-now.json'
+
+# connecting to WiFi
 wifi = network.WLAN(network.STA_IF)
 wifi.active(True)
 wifi.connect(wifi_ssid, wifi_pw)
@@ -19,16 +23,20 @@ print('IP:', wifi.ifconfig()[0], '\n')
 
 while True:
     
+    # reboot device if WiFi connectio is lost
     if not wifi.isconnected():
         print('WiFi connection lost. Rebooting...')
         reset()
     
     try:
+        
+        # send HTTP GET request to the API
         print('Querying API:', api_url)
         response = urequests.get(api_url)
         
         if response.status_code == 200:
             print('Query successful. JSON response:')
+            # return a dict containing the JSON data
             parsed = response.json()
             print(parsed)
    
