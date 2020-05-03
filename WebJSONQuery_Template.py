@@ -3,8 +3,8 @@
 import network, urequests, utime
 from machine import reset
 
-wifi_ssid = 'DW'
-wifi_pw = 'Wang0721'
+wifi_ssid = 'your_wifi_ssid'
+wifi_pw = 'your_wifi_pw'
 api_url = 'https://official-joke-api.appspot.com/random_joke'
 
 wifi = network.WLAN(network.STA_IF)
