@@ -28,6 +28,14 @@ A template for querying a API and get its JSON response. The JSON response would
 
 Note: if you get a SSL error (like "TLS buffer overflow" and/or "ssl_handshake_status: -xxx"), either your WiFi is unstable or the API is not fully supported by MicroPython.
 
+## Deep Sleep/Cloud Data Update
+
+<i>File: [DeepSleep_Cloud_Update.py](https://github.com/alankrantas/esp8266-micropython-cookbook/blob/master/DeepSleep_Cloud_Update.py)</i>
+
+This use deep sleep to make the board wake up every 30 seconds and upload readings of a DHT11 via IFTTT's Webhook service (in my case the data would be uploaded to a Google Drive spreadsheet).
+
+The script must be uploaded onto the board in order to make deep sleep work. Connect D0 (GPIO 16) and RST before you powering it up. Afterwards the board's REPL may not be responsive and you'll have to re-flash the firmware. 
+
 ## WS2812 NeoPixel Rainbow/Rotation Effect
 
 <i>File: [WS2812_NeoPixelRainbow.py](https://github.com/alankrantas/esp8266-micropython-cookbook/blob/master/WS2812_NeoPixelRainbow.py)</i>
