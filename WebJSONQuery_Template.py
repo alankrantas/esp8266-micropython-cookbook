@@ -4,8 +4,8 @@ import network, urequests, utime
 from machine import reset
 
 # user info
-wifi_ssid = 'your_wifi_ssid' # change this to your WiFi AP name
-wifi_pw   = 'your_wifi_pw'   # change this to your WiFi AP password
+wifi_ssid = 'FlagTest' # change this to your WiFi AP name
+wifi_pw   = '0233110330'   # change this to your WiFi AP password
 
 # API url
 api_url   = 'http://api.open-notify.org/iss-now.json'
@@ -38,7 +38,7 @@ while True:
             print('Query successful. JSON response:')
             # return a dict object containing the JSON data
             parsed = response.json()
-            print(parsed)
+            print(parsed) # you can access data by using parsed[key]
    
         else:
             print('Query failed. ' + \
@@ -53,4 +53,4 @@ while True:
               'the API is not supported by MicroPython.')
 
     print('')
-    utime.sleep(10)
+    utime.sleep(15)
