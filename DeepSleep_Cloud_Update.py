@@ -7,7 +7,7 @@
 # You can also maunally wake it up by pressing the RST button or
 # pull RST low with an external switch.
 
-# After that, you may need to re-flash the firmware to reset ESP8266.
+# Afterwards, you may need to re-flash the firmware to reset ESP8266.
 
 import network, urequests, machine, utime, dht
 
