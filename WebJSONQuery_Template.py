@@ -4,8 +4,8 @@ import network, urequests, utime
 from machine import reset
 
 # user info
-wifi_ssid = 'FlagTest' # change this to your WiFi AP name
-wifi_pw   = '0233110330'   # change this to your WiFi AP password
+wifi_ssid = '' # change this to your WiFi AP name
+wifi_pw   = '' # change this to your WiFi AP password
 
 # API url
 api_url   = 'http://api.open-notify.org/iss-now.json'
