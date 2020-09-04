@@ -6,6 +6,19 @@ I publish ESP8266/ESP32 MicroPyton projects from time to time on [Hackster.io](h
 
 -- Alan Wang
 
+## Hello World
+
+```python
+from machine import Pin
+import utime
+
+led = Pin(2, Pin.OUT)
+
+while True:
+    led.value(not led.value())
+    utime.sleep_ms(500)
+```
+
 ## Timer-Based Simple Web Clock on SSD1306
 
 <i>File: [SimpleWebClockWithTimer.py](https://github.com/alankrantas/esp8266-micropython-cookbook/blob/master/SimpleWebClockWithTimer.py)</i>
