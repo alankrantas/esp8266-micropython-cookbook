@@ -1,8 +1,8 @@
 # Conway's Game of Life on 128x64 SSD1306 OLED and ESP8266 (by Alan Wang)
 
 # game rule
-B = "3" # number of nearby cells to give birth of a new cell
-S = "23" # number of nearby cells to sustain an existing cell 
+B = '3'  # number of nearby cells to give birth of a new cell
+S = '23' # number of nearby cells to sustain an existing cell 
 matrix_factor = 3 # matrix factor (3 -> 128/3 x 64/3 -> 42 x 21)
 random_bit_num = 2 # initial randomize factor (2 = 2^2 (1/4 chance))
 
@@ -12,7 +12,7 @@ import urandom, gc
 from machine import Pin, I2C, ADC, freq
 from ssd1306 import SSD1306_I2C
 
-freq(160000000)
+freq(160000000) # set cpu to 160 MHz
 gc.enable()
 
 
