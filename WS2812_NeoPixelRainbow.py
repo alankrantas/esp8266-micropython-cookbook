@@ -15,7 +15,6 @@ np = NeoPixel(Pin(neopixel_pin, Pin.OUT), neopixel_num)
 
 # set NeoPixel to rainbow colors
 def neoPixelRanbow():
-    global np
     change = int(neopixel_maxlevel / (np.n / 3))
     peak_index = (0, int(np.n / 3), int(np.n / 3 * 2))
     for i in range(np.n):
@@ -30,7 +29,6 @@ def neoPixelRanbow():
 
 # rotate NeoPixel leds
 def neoPixelRotate(clockwise=True):
-    global np
     tmp = tuple(np)
     tmp = (tmp[-1:] + tmp[:-1]) if clockwise else (tmp[1:] + tmp[:1])
     for i, t in enumerate(tmp):
