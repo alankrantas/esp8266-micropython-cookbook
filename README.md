@@ -6,7 +6,7 @@ I publish ESP8266/ESP32 MicroPyton projects from time to time on [Hackster.io](h
 
 -- Alan Wang
 
-## Hello World
+## Hello World (Blinky)
 
 ```python
 from machine import Pin
@@ -19,11 +19,13 @@ while True:
     utime.sleep_ms(500)
 ```
 
-## Timer-Based Simple Web Clock on SSD1306
+## Simple Timer-Based Simple Web Clock on SSD1306
 
 <i>File: [SimpleWebClockWithTimer.py](https://github.com/alankrantas/esp8266-micropython-cookbook/blob/master/SimpleWebClockWithTimer.py)</i>
 
-A mini web clock that update system RTC time every 15 minutes via NTP server. It uses two <b>machine.timer</b>s instead of a while loop, reducing the code down to less than 40 actual lines. Change the SSID and PW to your own WiFi AP.
+A simple web clock that update system RTC time every 15 minutes via NTP server. It uses two <b>machine.timer</b>s instead of a while loop, reducing the code down to less than 40 actual lines. Change the SSID and PW to your own WiFi AP.
+
+The <i>[SimpleWebClockWithTimerUsingWebAPI.py](https://github.com/alankrantas/esp8266-micropython-cookbook/blob/master/SimpleWebClockWithTimerUsingWebAPI.py)</i> version works the same but use [World Time API](http://worldtimeapi.org/) to query time instead and update it via the machine.RTC module. Since the API can detect your timezone, you don't need to set it in this version.
 
 ## Display DHT11 Sensor Readings on SSD1306
 
