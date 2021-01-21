@@ -5,7 +5,7 @@ from neopixel import NeoPixel
 import utime
 
 # NeoPixel setup
-neopixel_pin          = 5   # pin for NeoPixel
+neopixel_pin          = 2   # pin for NeoPixel
 neopixel_num          = 12  # number of leds
 neopixel_maxlevel     = 128 # max brightness level (0-255)
 neopixel_rotate_delay = 50  # delay for rotating leds (ms)
@@ -24,6 +24,8 @@ def neoPixelRanbow():
                 color[j] = neopixel_maxlevel - abs(i - peak_index[j]) * change
             elif i >= peak_index[2]:
                 color[0] = neopixel_maxlevel - (np.n - i) * change
+                if color[0] < 0:
+                    color[0] = 0
         np[i] = tuple(color)
     np.write()
 
