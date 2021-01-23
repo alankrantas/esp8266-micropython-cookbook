@@ -19,6 +19,18 @@ while True:
     utime.sleep_ms(500)
 ```
 
+or
+
+```python
+from machine import Pin, Timer
+
+led = Pin(2, Pin.OUT)
+
+timer = Timer(-1)
+timer.init(mode=Timer.PERIODIC, period=500,
+           callback=lambda _: led.value(not led.value()))
+```
+
 ## Simple Timer-Based Simple Web Clock on SSD1306
 
 <i>File: [SimpleWebClockWithTimer.py](https://github.com/alankrantas/esp8266-micropython-cookbook/blob/master/SimpleWebClockWithTimer.py)</i>
