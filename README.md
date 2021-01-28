@@ -75,6 +75,12 @@ The script must be uploaded onto the board in order to make deep sleep work. Con
 
 Generate rainbow colors on multiple NeoPixel leds and rotate them (clockwise or else). The number of LEDs and brightness level can be adjusted.
 
+## WS2812 NeoPixel Rainbow/Rotation Effect 2
+
+<i>File: [WS2812_NeoPixelRainbow.py](https://github.com/alankrantas/esp8266-micropython-cookbook/blob/master/WS2812_NeoPixelRainbow_2.py)</i>
+
+This one is based on Adafruit's example which is slower but a lot smoother. I extended the original NeoPixel class for the extra cycling and brightness data.
+
 ## Conway's Game of Life on SSD1306
 
 <i>File: [ConwayGameOfLife_SSD1306.py](https://github.com/alankrantas/esp8266-micropython-cookbook/blob/master/ConwayGameOfLife_SSD1306.py)</i>
