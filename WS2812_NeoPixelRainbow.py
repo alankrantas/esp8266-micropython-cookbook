@@ -5,7 +5,7 @@ from neopixel import NeoPixel
 import utime
 
 # NeoPixel setup
-neopixel_pin          = 2   # pin for NeoPixel
+neopixel_pin          = 5   # pin for NeoPixel
 neopixel_num          = 12  # number of leds
 neopixel_maxlevel     = 128 # max brightness level (0-255)
 neopixel_rotate_delay = 50  # delay for rotating leds (ms)
