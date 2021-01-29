@@ -40,7 +40,7 @@ class NeoPixelRainbow(NeoPixel):
         for i in range(self.num):
             rc_index = (i * 256 // self.num) + self.cycle
             self[i] = self.wheel(rc_index & 255)
-        self.cycle = (self.cycle + 1) if self.cycle < 255 else 0
+        self.cycle = (self.cycle + 1) & 255
     
 
 np = NeoPixelRainbow(Pin(neopixel_pin, Pin.OUT), neopixel_num,
