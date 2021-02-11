@@ -24,25 +24,26 @@ for _ in range(1000):
 seed *= 10
 urandom.seed(seed * 10)
 
-B_list = list(map(int, B))
-S_list = list(map(int, S))
-matrix_size_x = int(128 / matrix_factor)
-matrix_size_y = int(64 / matrix_factor)
+B_list = [int(b) for b in B]
+S_list = [int(s) for s in S]
+matrix_size_x = 128 // matrix_factor
+matrix_size_y = 64 // matrix_factor
 
-matrix = [bytearray(1 if urandom.getrandbits(random_bit_num) == 0 else 0
+matrix = [bytearray(urandom.getrandbits(random_bit_num) == 0
                     for _ in range(matrix_size_y))
           for _ in range(matrix_size_x)]
 
-print("Conway's Game of Life: matrix size {} x {} (seed: {})".format(
-    matrix_size_x, matrix_size_y, seed))
+print('Conway\'s Game of Life: matrix size {} x {}'.format(
+    matrix_size_x, matrix_size_y))
 
+oled = SSD1306_I2C(128, 64, I2C(scl=Pin(5), sda=Pin(4)))
 generation = 0
 
 
 # calculate next generation
 def calculate_next_gen():
     global matrix
-    matrix_buf = [bytearray(0 for _ in range(matrix_size_y))
+    matrix_buf = [bytearray([0] * matrix_size_y)
                   for _ in range(matrix_size_x)]
     for i in range(matrix_size_x):
         for j in range(matrix_size_y):
@@ -72,8 +73,6 @@ def calculate_next_gen():
     del matrix_buf
 
 
-oled = SSD1306_I2C(128, 64, I2C(scl=Pin(5), sda=Pin(4)))
-
 # display cells on OLED
 def display_matrix():
     oled.fill(0)
@@ -89,7 +88,7 @@ def display_matrix():
 while True:
     generation += 1
     cell_count = sum(map(sum, matrix))
-    print("Generation {}: {} cell(s)".format(generation, cell_count))
+    print('Generation {}: {} cell(s)'.format(generation, cell_count))
     display_matrix()
     calculate_next_gen()
     gc.collect()
