@@ -1,94 +1,83 @@
 # Conway's Game of Life on 128x64 SSD1306 OLED and ESP8266 (by Alan Wang)
 
-# game rule
-B = '3'  # number of nearby cells to give birth of a new cell
-S = '23' # number of nearby cells to sustain an existing cell 
-matrix_factor = 3 # matrix factor (3 -> 128/3 x 64/3 -> 42 x 21)
-random_bit_num = 2 # initial randomize factor (2 = 2^2 (1/4 chance))
 
-# ------------------------------------------------------------
+BIRTH    = (3, )  # number of nearby cells for a new cell to be born
+SURVIVAL = (2, 3) # number of nearby cells for an existing cell to survive
+WIDTH    = 128
+HEIGHT   = 64
+DOT_SIZE = 3      # draw 3x3 dots -> board size 128/3 x 64/3
+RAND_BIT = 2      # cell randomize factor (2 = 2^2 (1/4 chance))
 
-import urandom, gc
-from machine import Pin, I2C, ADC, freq
+
+from machine import Pin, ADC, SoftI2C, freq
+from micropython import const
 from ssd1306 import SSD1306_I2C
+import urandom, utime, gc
 
-freq(160000000) # set cpu to 160 MHz
+
+freq(160000000)
 gc.enable()
+urandom.seed(sum([ADC(0).read() for _ in range(1000)]))  # generate randomize seed from floating analog pin
 
 
-# randomize seed from floating analog readings
-adc = ADC(0)
-seed = 0
-for _ in range(1000):
-    seed += adc.read()
-seed *= 10
-urandom.seed(seed * 10)
-
-B_list = [int(b) for b in B]
-S_list = [int(s) for s in S]
-matrix_size_x = 128 // matrix_factor
-matrix_size_y = 64 // matrix_factor
-
-matrix = [bytearray(urandom.getrandbits(random_bit_num) == 0
-                    for _ in range(matrix_size_y))
-          for _ in range(matrix_size_x)]
-
-print('Conway\'s Game of Life: matrix size {} x {}'.format(
-    matrix_size_x, matrix_size_y))
-
-oled = SSD1306_I2C(128, 64, I2C(scl=Pin(5), sda=Pin(4)))
-generation = 0
+X      = WIDTH // DOT_SIZE
+Y      = HEIGHT // DOT_SIZE
+TOTAL  = X * Y
+board  = [0 if urandom.getrandbits(RAND_BIT) else 1
+          for _ in range(TOTAL)]
+gen    = 0
 
 
-# calculate next generation
-def calculate_next_gen():
-    global matrix
-    matrix_buf = [bytearray([0] * matrix_size_y)
-                  for _ in range(matrix_size_x)]
-    for i in range(matrix_size_x):
-        for j in range(matrix_size_y):
-            cell_count = 0
-            for k in range(-1, 2):
-                for l in range(-1, 2):
-                    if not (k == 0 and l == 0):
-                        x = i + k
-                        y = j + l
-                        if x < 0:
-                            x = matrix_size_x - 1
-                        elif x >= matrix_size_x:
-                            x = 0
-                        if y < 0:
-                            y = matrix_size_y - 1
-                        elif y >= matrix_size_y:
-                            y = 0
-                        if matrix[x][y]:
-                            cell_count += 1
-            if not matrix[i][j]:
-                if cell_count in B_list:
-                    matrix_buf[i][j] = 1
-            else:
-                if cell_count in S_list:
-                    matrix_buf[i][j] = 1
-    matrix = matrix_buf
-    del matrix_buf
+display = SSD1306_I2C(WIDTH, HEIGHT,
+                      SoftI2C(scl=Pin(5), sda=Pin(4), freq=400000))
+display.fill(0)
+display.show()
 
 
-# display cells on OLED
-def display_matrix():
-    oled.fill(0)
-    for i in range(matrix_size_x):
-        for j in range(matrix_size_y):
-            if matrix[i][j]:
-                oled.fill_rect(i * matrix_factor, j * matrix_factor,
-                               matrix_factor, matrix_factor, 1)
-    oled.show()
+print('Conway\'s Game of Life: matrix size {} x {}'.format(X, Y))
 
 
-# start game of life
+def find_index(index):
+    if index < 0:
+        index += TOTAL
+    elif index >= TOTAL:
+        index -= TOTAL
+    return index
+    
+
+def calculate_next_gen():  # calculate next generation of cells
+    global board
+    buffer = [0] * TOTAL
+    for i in range(TOTAL):
+        group = board[i-1:i+2] + \
+                board[find_index(i-1-X):find_index(i+1-X)+1] + \
+                board[find_index(i-1+X):find_index(i+1+X)+1]
+        cells = sum(group)
+        if not board[i]:
+            if cells in BIRTH:
+                buffer[i] = 1
+        else:
+            if (cells - 1) in SURVIVAL:
+                buffer[i] = 1
+    board = buffer
+
+
+def display_board():  # draw cells on OLED
+    display.fill(0)
+    for i in range(TOTAL):
+        if board[i]:
+            display.fill_rect((i % X) * DOT_SIZE,
+                              (i // X) * DOT_SIZE,
+                              DOT_SIZE, DOT_SIZE, 1)
+    display.show()
+
+
+gen, t_start, t_dur = 0, 0, 0
+
 while True:
-    generation += 1
-    cell_count = sum(map(sum, matrix))
-    print('Generation {}: {} cell(s)'.format(generation, cell_count))
-    display_matrix()
+    gen += 1
+    print('Gen {}: {} cell(s) ({} ms)'.format(gen, sum(board), t_dur))
+    display_board()
+    t_start = utime.ticks_ms()
     calculate_next_gen()
-    gc.collect()
+    t_dur = utime.ticks_diff(utime.ticks_ms(), t_start)
