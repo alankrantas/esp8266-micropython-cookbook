@@ -85,4 +85,4 @@ This one is based on Adafruit's example which is slower but a lot smoother. I ex
 
 <i>File: [ConwayGameOfLife_SSD1306.py](https://github.com/alankrantas/esp8266-micropython-cookbook/blob/master/ConwayGameOfLife_SSD1306.py)</i>
 
-Run the simulation of [Conway's Game of Life](https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life) on the SSD1306 OLED display. The rules and the size of cell matrix can both be adjusted. 
+Run the simulation of [Conway's Game of Life](https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life) on the SSD1306 OLED display. The rules and the size of cell matrix can both be adjusted. Here I use a single-dimension list to simplify the code.
