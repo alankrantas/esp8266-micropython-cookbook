@@ -35,14 +35,6 @@ display.show()
 
 
 print('Conway\'s Game of Life: matrix size {} x {}'.format(X, Y))
-
-
-def find_index(index):
-    if index < 0:
-        index += TOTAL
-    elif index >= TOTAL:
-        index -= TOTAL
-    return index
     
 
 def calculate_next_gen():  # calculate next generation of cells
@@ -50,8 +42,8 @@ def calculate_next_gen():  # calculate next generation of cells
     buffer = [0] * TOTAL
     for i in range(TOTAL):
         group = board[i-1:i+2] + \
-                board[find_index(i-1-X):find_index(i+1-X)+1] + \
-                board[find_index(i-1+X):find_index(i+1+X)+1]
+                board[(i-1-X)%TOTAL:(i+2-X)%TOTAL] + \
+                board[(i-1+X)%TOTAL:(i+2+X)%TOTAL]
         cells = sum(group)
         if not board[i]:
             if cells in BIRTH:
