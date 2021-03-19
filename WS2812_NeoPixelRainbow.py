@@ -1,46 +1,90 @@
-# WS2812 NeoPixel LED Rainbow/Rotation Effect (by Alan Wang)
+# WS2812 NeoPixel LED Rainbow/Rotation Effect (based on Adafruit example)
 
-from machine import Pin
+neo_pin      = 5    # pin for NeoPixel
+neo_num      = 12   # number of leds
+neo_maxlevel = 0.3  # max brightness level (0.0-1.0)
+
+
+from machine import Pin, freq
 from neopixel import NeoPixel
 import utime
 
-# NeoPixel setup
-neopixel_pin          = 5   # pin for NeoPixel
-neopixel_num          = 12  # number of leds
-neopixel_maxlevel     = 128 # max brightness level (0-255)
-neopixel_rotate_delay = 50  # delay for rotating leds (ms)
+freq(160000000)
 
-# NeoPixel object
-np = NeoPixel(Pin(neopixel_pin, Pin.OUT), neopixel_num)
 
-# set NeoPixel to rainbow colors
-def neoPixelRanbow():
-    change = int(neopixel_maxlevel / (np.n / 3))
-    peak_index = (0, int(np.n / 3), int(np.n / 3 * 2))
+class NeoPixelRainbow(NeoPixel):
+    
+    def __init__(self, pin, num=0, brightness=0.0):
+        super().__init__(Pin(pin, Pin.OUT), num)
+        self.brightness = brightness
+    
+    def wheel(self, pos):
+        r, g, b = 0, 0, 0
+        if pos < 0 or pos > 255:
+            pass
+        elif pos < 85:
+            r, g, b = 255 - pos * 3, pos * 3, 0
+        elif pos < 170:
+            pos -= 85
+            r, g, b = 0, 255 - pos * 3, pos * 3
+        else:
+            pos -= 170
+            r, g, b = pos * 3, 0, 255 - pos * 3
+        r = round(r * self.brightness)
+        g = round(g * self.brightness)
+        b = round(b * self.brightness)
+        return (r, g, b)
+    
+    def clear(self):
+        for i in range(self.n):
+            self[i] = (0, 0, 0)
+    
+    def rainbowCycle(self, cycle=0):
+        for i in range(self.n):
+            self[i] = self.wheel((round(i * 255 / self.n) + cycle) & 255)
+            
+    def rotate(self, clockwise=True):
+        tmp = tuple(self)
+        tmp = (tmp[-1:] + tmp[:-1]) if clockwise else (tmp[1:] + tmp[:1])
+        for i, t in enumerate(tmp):
+            self[i] = t
+    
+
+np = NeoPixelRainbow(pin=neo_pin,
+                     num=neo_num,
+                     brightness=neo_maxlevel)
+
+
+RED = (255, 0, 0)
+YELLOW = (255, 150, 0)
+GREEN = (0, 255, 0)
+CYAN = (0, 255, 255)
+BLUE = (0, 0, 255)
+PURPLE = (180, 0, 255)
+WHITE = (255, 255, 255)
+BLACK = (0, 0, 0)
+COLORS = (RED, YELLOW, GREEN, CYAN, BLUE, PURPLE, WHITE, BLACK)
+
+for color in COLORS:       
+    np.fill(color)
+    np.write()
+    utime.sleep_ms(200)
+
+for color in COLORS:       
     for i in range(np.n):
-        color = [0, 0, 0]
-        for j in range(3):
-            if abs(i - peak_index[j]) <= peak_index[1]:
-                color[j] = neopixel_maxlevel - abs(i - peak_index[j]) * change
-            elif i >= peak_index[2]:
-                color[0] = neopixel_maxlevel - (np.n - i) * change
-                if color[0] < 0:
-                    color[0] = 0
-        np[i] = tuple(color)
-    np.write()
+        np[i] = color
+        np.write()
+        utime.sleep_ms(25)
 
-# rotate NeoPixel leds
-def neoPixelRotate(clockwise=True):
-    tmp = tuple(np)
-    tmp = (tmp[-1:] + tmp[:-1]) if clockwise else (tmp[1:] + tmp[:1])
-    for i, t in enumerate(tmp):
-        np[i] = t
-    np.write()
+np.rainbowCycle()
 
-# ----------------------------------------------------------------------
+for _ in range(np.n * 3):
+        np.rotate(clockwise=True)
+        np.write()
+        utime.sleep_ms(25)
 
-neoPixelRanbow()
-
+cycle = 0
 while True:
-    neoPixelRotate(clockwise=True)
-    utime.sleep_ms(neopixel_rotate_delay)
+    np.rainbowCycle(cycle)
+    np.write()
+    cycle = (cycle + 1) & 255
