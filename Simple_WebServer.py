@@ -1,54 +1,43 @@
 ssid  = '' # WiFi name
 pw    = '' # WiFi password
+port  = 80 # server port
 conns = 1  # number of channels
 
 
 from machine import Pin
-import network, usocket
+import network, usocket, sys
 
 led = Pin(2, Pin.OUT, value=1)
 
 
-print('Connecting to WiFi...') # connect to wifi
-wifi = network.WLAN(network.STA_IF)
-wifi.active(True)
-wifi.connect(ssid, pw)
-while not wifi.isconnected():
-    pass
-print("Connected.")
-print('Web server IP:', wifi.ifconfig()[0])
+# webpage template
+html  = r'<!DOCTYPE html>'
+html += r'<html>'
+html += r'<head>'
+html += r'<title>ESP8266 Web Server</title>'
+html += r'<meta name="viewport" content="width=device-width, initial-scale=1">'
+html += r'<link rel="icon" href="data:,">'
+html += r'<style>body {background-color: Moccasin;} h1 {color: SaddleBrown;} h2 {color: Olive;} </style>'
+html += r'</head>'
+html += r'<body><center>'
+html += r'<h1>ESP8266 Web Server</h1>'
+html += r'<h2>LED status: {led_status}</h2>'
+html += r'<form methon="GET" action="">'
+html += r'<p><input id="led_on" type="submit" name="led" value="On"></p>'
+html += r'<p><input id="led_off" type="submit" name="led" value="Off"></p>'
+html += r'</form></center></body>'
+html += r'</html>'
 
-s = usocket.socket(usocket.AF_INET, usocket.SOCK_STREAM)
-s.bind(('', 80))
-s.listen(conns)
 
-
-# webpage to be sent to user
+# generated webpage to be sent to user
 def web_page():
     led_status = 'ON' if led.value() == 0 else 'OFF'
-    print('LED status:', led_status)
-    html  = r'<!DOCTYPE html>'
-    html += r'<html>'
-    html += r'<head>'
-    html += r'<title>ESP8266 Web Server</title>'
-    html += r'<meta name="viewport" content="width=device-width, initial-scale=1">'
-    html += r'<link rel="icon" href="#">'
-    html += r'<style>body {background-color: Moccasin;} h1 {color: SaddleBrown;} h2 {color: Olive;} </style>'
-    html += r'</head>'
-    html += r'<body><center>'
-    html += r'<h1>ESP8266 Web Server</h1>'
-    html += r'<h2>LED status: ' + led_status + r'</h2>'
-    html += r'<form methon="GET" action="">'
-    html += r'<p><input id="led_on" type="submit" name="led" value="On"></p>'
-    html += r'<p><input id="led_off" type="submit" name="led" value="Off"></p>'
-    html += r'</form></center></body>'
-    html += r'</html>'
-    return html
+    return html.replace('{led_status}', led_status)
 
 
 # extract any number of parameter names and values from HTTP response
 def get_paras(get_str):
-    para_dict = dict()
+    para_dict = {}
     q_pos = get_str.find('/?')
     if q_pos > 0:
         http_pos = get_str.find('HTTP/')
@@ -57,16 +46,43 @@ def get_paras(get_str):
             para_tmp = para.split('=')
             para_dict.update({para_tmp[0] : para_tmp[1]})
     return para_dict
+
+# wifi error descriptions
+wifi_error = {
+    network.STAT_WRONG_PASSWORD: 'wrong password',
+    network.STAT_NO_AP_FOUND: 'wifi AP not found',
+    network.STAT_CONNECT_FAIL: 'due to other problems',
+    }
+
+
+# connect to wifi
+print('Connecting to WiFi...')
+wifi = network.WLAN(network.STA_IF)
+wifi.active(True)
+wifi.connect(ssid, pw)
+while wifi.status() == network.STAT_CONNECTING:
+    pass
         
+if wifi.status() != network.STAT_GOT_IP:
+    print('Failed to connect:', wifi_error[wifi.status()])
+    sys.exit()
+
+
+print('Connected.')
+s = usocket.socket(usocket.AF_INET, usocket.SOCK_STREAM)
+s.bind(('', port))
+s.listen(conns)
+print('Web server started on', 'http://{}:{}'.format(wifi.ifconfig()[0], port))
+
 
 while True:
 
     # wait for client
     client, addr = s.accept()
-    print('Client at', addr[0])
+    print('Client connected from', addr[0])
     request = client.recv(1024)
     
-    # extract parameters
+    # extract url parameters
     request_text = request.decode('utf-8')
     paras = get_paras(request_text)
     
