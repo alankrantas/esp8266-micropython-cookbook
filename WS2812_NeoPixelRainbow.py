@@ -5,11 +5,9 @@ neo_num      = 12   # number of leds
 neo_maxlevel = 0.3  # max brightness level (0.0-1.0)
 
 
-from machine import Pin, freq
+from machine import Pin
 from neopixel import NeoPixel
 import utime
-
-freq(160000000)
 
 
 class NeoPixelRainbow(NeoPixel):
