@@ -14,7 +14,7 @@ api_url = 'http://api.open-notify.org/iss-now.json'
 wifi_error = {
     network.STAT_WRONG_PASSWORD: 'wrong password',
     network.STAT_NO_AP_FOUND: 'wifi AP not found',
-    network.STAT_CONNECT_FAIL: 'due to other problems',
+    -1: 'due to other problems',
     }
 
 # connecting to WiFi
@@ -27,7 +27,7 @@ while wifi.status() == network.STAT_CONNECTING:
     pass
         
 if wifi.status() != network.STAT_GOT_IP:
-    print('Failed to connect:', wifi_error[wifi.status()])
+    print('Failed to connect:', wifi_error.get(wifi.status(), wifi_error[-1]))
     sys.exit()
 
 print('Connected.')
