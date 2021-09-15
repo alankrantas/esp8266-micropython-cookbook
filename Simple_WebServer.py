@@ -51,7 +51,7 @@ def get_paras(get_str):
 wifi_error = {
     network.STAT_WRONG_PASSWORD: 'wrong password',
     network.STAT_NO_AP_FOUND: 'wifi AP not found',
-    network.STAT_CONNECT_FAIL: 'due to other problems',
+    -1: 'due to other problems',
     }
 
 
@@ -64,7 +64,7 @@ while wifi.status() == network.STAT_CONNECTING:
     pass
         
 if wifi.status() != network.STAT_GOT_IP:
-    print('Failed to connect:', wifi_error[wifi.status()])
+    print('Failed to connect:', wifi_error.get(wifi.status(), wifi_error[-1]))
     sys.exit()
 
 
