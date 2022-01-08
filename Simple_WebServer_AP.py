@@ -73,7 +73,6 @@ while True:
     
     # extract url parameters
     request_text = request.decode('utf-8')
-    print(request_text)
     paras = get_paras(request_text)
     
     # control the led
