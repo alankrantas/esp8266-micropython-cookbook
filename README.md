@@ -55,7 +55,7 @@ A simple web server in STA mode (connect to your WiFi and you can access a webpa
 
 <i>File: [Simple_WebServer_AP.py](https://github.com/alankrantas/esp8266-micropython-cookbook/blob/master/Simple_WebServer_AP.py)</i>
 
-This is the AP mode version, which will start its own WiFi AP (works without externam WiFi). Connect the AP (default named "ESP8266") from your device and open http://192.168.4.1 in your browser.
+This is the AP mode version, which will start its own WiFi AP (works without externam WiFi). Connect the AP (default named "ESP8266" with password 12345678, can be changed in the code) from your device and open http://192.168.4.1 in your browser.
 
 ## Web JSON Query Template
 
