@@ -51,11 +51,11 @@ Change dht.DHT11 to dht.DHT22 if you are using a DHT22 sensor.
 
 <i>File: [Simple_WebServer.py](https://github.com/alankrantas/esp8266-micropython-cookbook/blob/master/Simple_WebServer.py)</i>
 
-A simple web server in STA mode (connect to your WiFi and you can access a webpage from a web browser). You'll have to connect the ESP8266 on your computer to read the actual IP it get. This example allows you to turn the onboard LED on or off.
+A simple web server in STA mode (connect to your WiFi and will return a HTML webpage to your web browser). You'll have to connect the ESP8266 on your computer to read the actual IP it get. This example allows you to turn the onboard LED on or off.
 
 <i>File: [Simple_WebServer_AP.py](https://github.com/alankrantas/esp8266-micropython-cookbook/blob/master/Simple_WebServer_AP.py)</i>
 
-This is the AP mode version, which will start its own WiFi AP (works without externam WiFi). Connect the AP (default named "ESP8266" with password 12345678, can be changed in the code) from your device and open http://192.168.4.1 in your browser.
+This is the AP mode version, which will start its own WiFi access point (works without externam WiFi). Connect the AP (default named "ESP8266" with password 12345678, can be changed in the code) from your smartphone and open http://192.168.4.1 in your phone browser.
 
 ## Web JSON Query Template
 
