@@ -1,7 +1,7 @@
-ssid  = 'ESP8266'  # AP name
+ssid  = 'ESP8266'  # AP name 
 pw    = '12345678' # AP password
 port  = 80 # server port
-conns = 4  # number of channels
+conns = 1  # number of channels
 
 
 from machine import Pin
@@ -11,32 +11,51 @@ led = Pin(2, Pin.OUT, value=1)
 
 
 # webpage template
-html  = r'HTTP/1.1 200 OK' + '\r\n'
-html += r'Content-Type: text/html' + '\r\n'
-html += r'Connection: close' + '\r\n\r\n'
-html += r'<!DOCTYPE html>'
-html += r'<html>'
-html += r'<head>'
-html += r'<title>ESP8266 Web Server</title>'
-html += r'<meta name="viewport" content="width=device-width, initial-scale=1">'
-html += r'<link rel="icon" href="data:,">'
-html += r'<style>body {background-color: Moccasin;} h1 {color: SaddleBrown;} h2 {color: Olive;} </style>'
-html += r'</head>'
-html += r'<body><center>'
-html += r'<h1>ESP8266 Web Server</h1>'
-html += r'<h2>LED status: {led_status}</h2>'
-html += r'<form methon="GET" action="">'
-html += r'<p><input id="led_on" type="submit" name="led" value="On"></p>'
-html += r'<p><input id="led_off" type="submit" name="led" value="Off"></p>'
-html += r'</form></center></body>'
-html += r'</html>'
+html = """
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>ESP8266 Web Server</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <link rel="icon" href="data:," />
+        <style>
+            body {
+            background-color: Moccasin;
+            }
+            h1 {
+            color: SaddleBrown;
+            }
+            h2 {
+            color: Olive;
+            }
+        </style>
+    </head>
+    <body>
+        <center>
+            <h1>ESP8266 Web Server</h1>
+            <h2>LED status: <!--led_status--></h2>
+            <form methon="GET" action="">
+                <p><input id="led_on" type="submit" name="led" value="On" /></p>
+                <p><input id="led_off" type="submit" name="led" value="Off" /></p>
+            </form>
+        </center>
+    </body>
+</html>
+"""
+
+# add HTTP response headers
+http_resp = 'HTTP/1.1 200 OK\r\n' + \
+    'Content-Type: text/html\r\n' + \
+    'Connection: close\r\n\r\n'
+
+# parse html to a single string
+html = http_resp + ''.join([line.strip() for line in html.split('\n')])
 
 
 # generated webpage to be sent to user
 def web_page():
     led_status = 'ON' if led.value() == 0 else 'OFF'
-    return html.replace('{led_status}', led_status)
-
+    return html.replace('<!--led_status-->', led_status)
 
 # extract any number of parameter names and values from HTTP response
 def get_paras(get_str):
@@ -61,7 +80,8 @@ wifi.active(True)
 s = usocket.socket(usocket.AF_INET, usocket.SOCK_STREAM)
 s.bind(('', port))
 s.listen(conns)
-print('Web server started on', '{} (local ip: http://{}:{})'.format(ssid, wifi.ifconfig()[0], port))
+print('Web server started on AP',
+      '<{}> (local ip: http://{}:{})'.format(ssid, wifi.ifconfig()[0], port))
 
 
 while True:
