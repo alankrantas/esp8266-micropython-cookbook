@@ -4,6 +4,8 @@
 
 I publish ESP8266/ESP32 MicroPyton projects from time to time on [Hackster.io](https://www.hackster.io/alankrantas). Here I have some smaller project/scripts I wrote forMicroPython, in which I tried to make the code as simple as possible and only use built-in modules.
 
+Most of the code works for ESp8266, ESP32 and Raspberry Pi Pico W.
+
 -- Alan Wang
 
 ## Hello World (Blinky)
