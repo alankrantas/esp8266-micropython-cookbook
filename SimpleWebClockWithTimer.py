@@ -2,16 +2,20 @@
 
 SSID = ''           # WiFi ssid
 PW   = ''           # WiFi password
-TMZ_HOUR_OFFSET = 0 # timezone hour offset
+TMZ_HOUR_OFFSET = 8 # timezone hour offset
+SCL  = 5
+SDA  = 4
 
-import network, ntptime, utime, ssd1306
-from machine import Pin, I2C, Timer
+import network, ntptime, utime, ssd1306, gc
+from machine import Pin, SoftI2C, Timer
 
-# dictionary for weekday names
+gc.enable()
+
+# weekday names
 weekday = ('Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday')
 
 # setup oled display (SCL -> D1, SDA -> D2)
-display = ssd1306.SSD1306_I2C(128, 64, I2C(scl=Pin(5), sda=Pin(4)))
+display = ssd1306.SSD1306_I2C(128, 64, SoftI2C(scl=Pin(SCL), sda=Pin(SDA)))
 
 # setup and connect WiFi
 wifi = network.WLAN(network.STA_IF)
@@ -19,6 +23,8 @@ wifi.active(True)
 wifi.connect(SSID, PW)
 while not wifi.isconnected():
     pass
+
+sec_prev = 0
 
 # time update function
 def ntpUpdate(timer):
@@ -31,12 +37,15 @@ def ntpUpdate(timer):
 
 # display update function
 def clockUpdate(timer):
-    localTime = utime.localtime(utime.time() + TMZ_HOUR_OFFSET * 3600)
-    display.fill(0)
-    display.text(weekday[localTime[6]], 8, 8)
-    display.text('{0:04d}-{1:02d}-{2:02d}'.format(*localTime), 8, 24)
-    display.text('{3:02d}:{4:02d}:{5:02d}'.format(*localTime), 8, 40)
-    display.show() # display clock
+    global sec_prev
+    lt = utime.localtime(utime.time() + TMZ_HOUR_OFFSET * 3600)
+    if lt[5] != sec_prev:
+        display.fill(0)
+        display.text(weekday[lt[6]], 8, 8)
+        display.text('{0:04d}-{1:02d}-{2:02d}'.format(*lt), 8, 24)
+        display.text('{3:02d}:{4:02d}:{5:02d}'.format(*lt), 8, 40)
+        display.show() # display clock
+    sec_prev = lt[5]
 
 # update time for the first time
 ntpUpdate(None)
