@@ -3,15 +3,19 @@
 
 SSID = '' # WiFi ssid
 PW   = '' # WiFi password
+SCL  = 5
+SDA  = 4
 
-import network, urequests, utime, ssd1306
-from machine import Pin, I2C, Timer, RTC
+import network, urequests, utime, ssd1306, gc
+from machine import Pin, SoftI2C, Timer, RTC
 
-# dictionary for weekday names
+gc.enable()
+
+# weekday names
 weekday = ('Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday')
 
 # setup oled display (SCL -> D1, SDA -> D2)
-display = ssd1306.SSD1306_I2C(128, 64, I2C(scl=Pin(5), sda=Pin(4)))
+display = ssd1306.SSD1306_I2C(128, 64, SoftI2C(scl=Pin(SCL), sda=Pin(SDA)))
 
 # inernal RTC
 rtc = RTC()
@@ -22,6 +26,8 @@ wifi.active(True)
 wifi.connect(SSID, PW)
 while not wifi.isconnected():
     pass
+
+sec_prev = 0
 
 # time update function
 def rtcUpdate(timer):
@@ -39,17 +45,19 @@ def rtcUpdate(timer):
                 rtc.datetime((dt[0], dt[1], dt[2], dt[6], dt[3], dt[4], dt[5], 0))
                 break
         except:
-            pass
-        utime.sleep(5) # try again if failed
+            utime.sleep(10) # try again if failed
 
 # display update function
 def clockUpdate(timer):
+    global sec_prev
     dt = rtc.datetime()
-    display.fill(0)
-    display.text(weekday[dt[3]], 8, 8)
-    display.text('{0:04d}-{1:02d}-{2:02d}'.format(*dt), 8, 24)
-    display.text('{4:02d}:{5:02d}:{6:02d}'.format(*dt), 8, 40)
-    display.show() # display clock
+    if dt[6] != sec_prev:
+        display.fill(0)
+        display.text(weekday[dt[3]], 8, 8)
+        display.text('{0:04d}-{1:02d}-{2:02d}'.format(*dt), 8, 24)
+        display.text('{4:02d}:{5:02d}:{6:02d}'.format(*dt), 8, 40)
+        display.show() # display clock
+    sec_prev = dt[6]
 
 # update time for the first time
 rtcUpdate(None)
