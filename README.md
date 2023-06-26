@@ -10,7 +10,7 @@ See [ESP8266 Pinout Reference](https://randomnerdtutorials.com/esp8266-pinout-re
 
 ## Hello World (Blinky)
 
-Controlling the on-board LED on pin D4 (GPIO 2):
+Controlling the on-board LED on pin D4 (GPIO 2) or an external LED:
 
 ```python
 from machine import Pin
@@ -35,9 +35,11 @@ timer.init(mode=Timer.PERIODIC, period=500,
            callback=lambda _: led.value(not led.value()))
 ```
 
+> The onboaard LED in most ESP8266s are reversed so it will light up at low voltage instead.
+
 ## Pull-Up Button
 
-Reading a button connecting to pin D1 (GPIO 5):
+Reading a button connecting to pin D1 (GPIO 5) and GND, no resistor required:
 
 ```python
 from machine import Pin, Signal
@@ -50,7 +52,9 @@ while True:
     utime.sleep_ms(100)
 ```
 
-> MicroPython now supports f-string but the examples below use ```format``` for backward compatibility. 
+> MicroPython now supports f-string but the examples below still use ```format``` for backward compatibility. 
+
+---
 
 ## Simple Timer-Based Simple Web Clock on SSD1306
 
