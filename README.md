@@ -6,9 +6,11 @@ I publish ESP8266/ESP32 MicroPyton projects from time to time on [Hackster.io](h
 
 Most of the code works for ESp8266, ESP32 and Raspberry Pi Pico W.
 
--- Alan Wang
+See [ESP8266 Pinout Reference](https://randomnerdtutorials.com/esp8266-pinout-reference-gpios/) for the actual GPIO number for each pins. All ESP8266s (for example, NodeMCU and WeMos D1/D1 mini as well as their clones) are functionally identical. Most of them use either CP2012 or CH340 USB chip which requires driver on Windows.
 
 ## Hello World (Blinky)
+
+Controlling the on-board LED on pin D4 (GPIO 2):
 
 ```python
 from machine import Pin
@@ -32,6 +34,23 @@ timer = Timer(-1)
 timer.init(mode=Timer.PERIODIC, period=500,
            callback=lambda _: led.value(not led.value()))
 ```
+
+## Pull-Up Button
+
+Reading a button connecting to pin D1 (GPIO 5):
+
+```python
+from machine import Pin, Signal
+import utime
+
+btn = Signal(Pin(5, Pin.IN, Pin.PULL_UP), invert=True)
+
+while True:
+    print(f'Button pressed: {'yes' if btn.value() else 'no'}')
+    utime.sleep_ms(100)
+```
+
+> MicroPython now supports f-string but the examples below use ```format``` for backward compatibility. 
 
 ## Simple Timer-Based Simple Web Clock on SSD1306
 
