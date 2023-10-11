@@ -7,7 +7,7 @@ neo_maxlevel = 0.3  # max brightness level (0.0-1.0)
 
 from machine import Pin
 from neopixel import NeoPixel
-import utime
+import time
 
 
 class NeoPixelRainbow(NeoPixel):
@@ -66,20 +66,20 @@ COLORS = (RED, YELLOW, GREEN, CYAN, BLUE, PURPLE, WHITE, BLACK)
 for color in COLORS:       
     np.fill(color)
     np.write()
-    utime.sleep_ms(200)
+    time.sleep_ms(200)
 
 for color in COLORS:       
     for i in range(np.n):
         np[i] = color
         np.write()
-        utime.sleep_ms(25)
+        time.sleep_ms(25)
 
 np.rainbowCycle()
 
 for _ in range(np.n * 3):
         np.rotate(clockwise=True)
         np.write()
-        utime.sleep_ms(25)
+        time.sleep_ms(25)
 
 cycle = 0
 while True:
