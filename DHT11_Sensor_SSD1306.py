@@ -1,7 +1,7 @@
 # Display DHT11 sensor readings on SSD1306
 
 from machine import Pin, I2C
-import utime, dht, ssd1306
+import time, dht, ssd1306
 
 # DHT11 sensor (Pin D5)
 dht = dht.DHT11(Pin(14))
@@ -30,4 +30,4 @@ while True:
     display.show()
     
     # wait for 2 seconds
-    utime.sleep(2)
+    time.sleep(2)
