@@ -1,6 +1,6 @@
 # ESP8266 Web JSON Query Template
 
-import network, urequests, utime, sys
+import network, requests, time, sys
 
 # user info
 ssid = '' # change this to your WiFi AP name
@@ -32,7 +32,7 @@ if wifi.status() != network.STAT_GOT_IP:
 
 print('Connected.')
 print('IP:', wifi.ifconfig()[0], '\n')
-utime.sleep(1)
+time.sleep(1)
 
 
 while True:
@@ -40,7 +40,7 @@ while True:
     try:
         # send HTTP GET request to the API
         print('Querying API:', api_url)
-        response = urequests.get(api_url)
+        response = requests.get(api_url)
         
         if response.status_code == 200:
             print('Query successful. JSON response:')
@@ -61,4 +61,4 @@ while True:
               'the API is not supported by MicroPython.')
 
     print('')
-    utime.sleep(30)
+    time.sleep(30)
