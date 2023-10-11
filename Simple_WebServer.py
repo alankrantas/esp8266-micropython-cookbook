@@ -5,7 +5,7 @@ conns = 1  # number of channels
 
 
 from machine import Pin
-import network, usocket, sys
+import network, socket, sys
 
 led = Pin(2, Pin.OUT, value=1)
 
@@ -90,7 +90,7 @@ if wifi.status() != network.STAT_GOT_IP:
     sys.exit()
 
 print('Connected.')
-s = usocket.socket(usocket.AF_INET, usocket.SOCK_STREAM)
+s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 s.bind(('', port))
 s.listen(conns)
 print('Web server started on', 'http://{}:{}'.format(wifi.ifconfig()[0], port))
