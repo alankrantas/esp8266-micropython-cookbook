@@ -9,7 +9,7 @@
 
 # Afterwards, you may need to re-flash the firmware to reset ESP8266.
 
-import network, urequests, machine, utime, dht
+import network, requests, machine, time, dht
 
 # user info
 wifi_ssid = 'your_wifi_ssid'     # change this to your WiFi AP name
@@ -55,7 +55,7 @@ response = None
 
 try:
     print('Upload data...')
-    response = urequests.get(query_url)
+    response = requests.get(query_url)
 except:
     pass
 
@@ -64,16 +64,16 @@ if not response == None and response.status_code == 200:
      # led flashing quickly
     for _ in range(10):
         led.value(1)
-        utime.sleep_ms(25)
+        time.sleep_ms(25)
         led.value(0)
-        utime.sleep_ms(25)
+        time.sleep_ms(25)
 else:
     print('Upload failed')
      # led flashing slowly
     led.value(1)
-    utime.sleep_ms(250)
+    time.sleep_ms(250)
     led.value(0)
-    utime.sleep_ms(250)
+    time.sleep_ms(250)
 
 # led off
 led.value(1)
