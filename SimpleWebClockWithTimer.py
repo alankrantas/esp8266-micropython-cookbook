@@ -6,7 +6,7 @@ TMZ_HOUR_OFFSET = 8 # timezone hour offset
 SCL  = 5
 SDA  = 4
 
-import network, ntptime, utime, ssd1306, gc
+import network, ntptime, time, ssd1306, gc
 from machine import Pin, SoftI2C, Timer
 
 gc.enable()
@@ -33,12 +33,12 @@ def ntpUpdate(timer):
             ntptime.settime() # query NTP server and update system time
             break
         except:
-            utime.sleep(5) # try again if failed
+            time.sleep(5) # try again if failed
 
 # display update function
 def clockUpdate(timer):
     global sec_prev
-    lt = utime.localtime(utime.time() + TMZ_HOUR_OFFSET * 3600)
+    lt = time.localtime(time.time() + TMZ_HOUR_OFFSET * 3600)
     if lt[5] != sec_prev:
         display.fill(0)
         display.text(weekday[lt[6]], 8, 8)
