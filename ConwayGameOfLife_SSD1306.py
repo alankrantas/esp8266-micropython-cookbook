@@ -12,18 +12,18 @@ RAND_BIT = 2      # cell randomize factor (2 = 2^2 (1/4 chance))
 from machine import Pin, ADC, SoftI2C, freq
 from micropython import const
 from ssd1306 import SSD1306_I2C
-import urandom, utime, gc
+import random, time, gc
 
 
 freq(160000000)
 gc.enable()
-urandom.seed(sum([ADC(0).read() for _ in range(1000)]))  # generate randomize seed from floating analog pin
+random.seed(sum([ADC(0).read() for _ in range(1000)]))  # generate randomize seed from floating analog pin
 
 
 X      = WIDTH // DOT_SIZE
 Y      = HEIGHT // DOT_SIZE
 TOTAL  = X * Y
-board  = [0 if urandom.getrandbits(RAND_BIT) else 1
+board  = [0 if random.getrandbits(RAND_BIT) else 1
           for _ in range(TOTAL)]
 gen    = 0
 
@@ -70,6 +70,6 @@ while True:
     gen += 1
     print('Gen {}: {} cell(s) ({} ms)'.format(gen, sum(board), t_dur))
     display_board()
-    t_start = utime.ticks_ms()
+    t_start = time.ticks_ms()
     calculate_next_gen()
-    t_dur = utime.ticks_diff(utime.ticks_ms(), t_start)
+    t_dur = time.ticks_diff(time.ticks_ms(), t_start)
