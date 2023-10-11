@@ -6,7 +6,7 @@ PW   = '' # WiFi password
 SCL  = 5
 SDA  = 4
 
-import network, urequests, utime, ssd1306, gc
+import network, requests, time, ssd1306, gc
 from machine import Pin, SoftI2C, Timer, RTC
 
 gc.enable()
@@ -33,19 +33,19 @@ sec_prev = 0
 def rtcUpdate(timer):
     while True:
         try:
-            response = urequests.get('http://worldtimeapi.org/api/ip')
+            response = requests.get('http://worldtimeapi.org/api/ip')
             if response.status_code == 200:
                 parsed = response.json()
                 # parsed['unixtime']: local unixtime since 1970/01/01 00:00:00)
                 # parsed['raw_offset']: timezone hour offset
                 # 946684800: unixtime of 2020/01/01 00:00:00 (system start time on MicroPython)
                 # generate datetime tuple based on these information
-                dt = utime.localtime(parsed['unixtime'] + parsed['raw_offset'] - 946684800)
+                dt = time.localtime(parsed['unixtime'] + parsed['raw_offset'] - 946684800)
                 # rtc.datetime((year, month, day, weekday, hour, minute, second, microsecond))
                 rtc.datetime((dt[0], dt[1], dt[2], dt[6], dt[3], dt[4], dt[5], 0))
                 break
         except:
-            utime.sleep(10) # try again if failed
+            time.sleep(10) # try again if failed
 
 # display update function
 def clockUpdate(timer):
