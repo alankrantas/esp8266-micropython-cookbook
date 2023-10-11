@@ -5,7 +5,7 @@ conns = 1  # number of channels
 
 
 from machine import Pin
-import network, usocket
+import network, socket
 
 led = Pin(2, Pin.OUT, value=1)
 
@@ -77,7 +77,7 @@ wifi.config(essid=ssid, password=pw, channel=conns,
             authmode=network.AUTH_WPA_WPA2_PSK)
 wifi.active(True)
 
-s = usocket.socket(usocket.AF_INET, usocket.SOCK_STREAM)
+s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 s.bind(('', port))
 s.listen(conns)
 print('Web server started on AP',
