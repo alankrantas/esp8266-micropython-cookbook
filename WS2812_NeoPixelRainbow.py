@@ -51,21 +51,21 @@ class NeoPixelRainbow():
         return (r, g, b)
     
     def fill(self, color):
-        self._buffer[:] = [color] * self.n
+        self[:] = [color] * self.n
         
     def clear(self, color):
         self.fill((0, 0, 0))
 
     def rainbowCycle(self, cycle=0):
         for i in range(len(self._buffer)):
-            self._buffer[i] = self._wheel((round(i * 255 / self.n) + cycle) & 255)
+            self[i] = self._wheel((round(i * 255 / self.n) + cycle) & 255)
             
     def rotate(self, clockwise=True):
-        self._buffer[:] = (self._buffer[-1:] + self._buffer[:-1]) if clockwise else (self._buffer[1:] + self._buffer[:1])
+        self[:] = (self[-1:] + self[:-1]) if clockwise else (self[1:] + self[:1])
     
     def write(self):
         for i in range(self.n):
-            self._np[i] = self._color(self._buffer[i])
+            self._np[i] = self._color(self[i])
         self._np.write()
 
 
