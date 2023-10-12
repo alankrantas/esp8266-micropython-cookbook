@@ -10,13 +10,33 @@ from neopixel import NeoPixel
 import time
 
 
-class NeoPixelRainbow(NeoPixel):
+class NeoPixelRainbow():
     
     def __init__(self, pin, num=0, brightness=0.0):
-        super().__init__(Pin(pin, Pin.OUT), num)
-        self.brightness = brightness
+        self._np = NeoPixel(Pin(pin, Pin.OUT), num)
+        self._buffer = [(0, 0, 0)] * num
+        self._brightness = brightness
     
-    def wheel(self, pos):
+    def __getitem__(self, key):
+        return self._buffer[key]
+
+    def __setitem__(self, key, value):
+        if isinstance(key, int):
+            self._buffer[key] = tuple(value)
+        elif isinstance(key, slice):
+            self._buffer[key] = [tuple(color) for color in value]
+
+    def __len__(self):
+        return len(self._buffer)
+    
+    @property
+    def n(self):
+        return len(self._buffer)
+    
+    def _color(self, color):
+        return tuple([round(c * self._brightness) for c in color])
+    
+    def _wheel(self, pos):
         r, g, b = 0, 0, 0
         if pos < 0 or pos > 255:
             pass
@@ -28,25 +48,26 @@ class NeoPixelRainbow(NeoPixel):
         else:
             pos -= 170
             r, g, b = pos * 3, 0, 255 - pos * 3
-        r = round(r * self.brightness)
-        g = round(g * self.brightness)
-        b = round(b * self.brightness)
         return (r, g, b)
     
-    def clear(self):
-        for i in range(self.n):
-            self[i] = (0, 0, 0)
-    
+    def fill(self, color):
+        self._buffer[:] = [color] * self.n
+        
+    def clear(self, color):
+        self.fill((0, 0, 0))
+
     def rainbowCycle(self, cycle=0):
-        for i in range(self.n):
-            self[i] = self.wheel((round(i * 255 / self.n) + cycle) & 255)
+        for i in range(len(self._buffer)):
+            self._buffer[i] = self._wheel((round(i * 255 / self.n) + cycle) & 255)
             
     def rotate(self, clockwise=True):
-        tmp = tuple(self)
-        tmp = (tmp[-1:] + tmp[:-1]) if clockwise else (tmp[1:] + tmp[:1])
-        for i, t in enumerate(tmp):
-            self[i] = t
+        self._buffer[:] = (self._buffer[-1:] + self._buffer[:-1]) if clockwise else (self._buffer[1:] + self._buffer[:1])
     
+    def write(self):
+        for i in range(self.n):
+            self._np[i] = self._color(self._buffer[i])
+        self._np.write()
+
 
 np = NeoPixelRainbow(pin=neo_pin,
                      num=neo_num,
