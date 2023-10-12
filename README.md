@@ -102,7 +102,7 @@ The script must be uploaded onto the board in order to make deep sleep work. Con
 
 <i>File: [WS2812_NeoPixelRainbow.py](https://github.com/alankrantas/esp8266-micropython-cookbook/blob/master/WS2812_NeoPixelRainbow.py)</i>
 
-Based on Adafruit's NeoPixel example code, here I extended the original NeoPixel class to add some convenient methods.
+Based on Adafruit's NeoPixel example code, basically a wrapper class with rainbow/rotate methods, slice assignment and brightness control.
 
 ## Conway's Game of Life on SSD1306
 
