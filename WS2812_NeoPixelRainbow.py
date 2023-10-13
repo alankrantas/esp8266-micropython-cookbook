@@ -36,7 +36,7 @@ class NeoPixelRainbow():
     def _color(self, color):
         return tuple([round(c * self._brightness) for c in color])
     
-    def _wheel(self, pos):
+    def wheel(self, pos):
         r, g, b = 0, 0, 0
         if pos < 0 or pos > 255:
             pass
@@ -58,7 +58,7 @@ class NeoPixelRainbow():
 
     def rainbowCycle(self, cycle=0):
         for i in range(len(self._buffer)):
-            self[i] = self._wheel((round(i * 255 / self.n) + cycle) & 255)
+            self[i] = self.wheel((round(i * 255 / self.n) + cycle) & 255)
             
     def rotate(self, clockwise=True):
         self[:] = (self[-1:] + self[:-1]) if clockwise else (self[1:] + self[:1])
